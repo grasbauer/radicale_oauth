@@ -1,0 +1,21 @@
+[server]
+hosts = 0.0.0.0:5280
+
+[auth]
+type = radicale_oauth2_hybrid
+imap_host = __IMAP_HOST__
+imap_security = tls
+
+[rights]
+type = owner_only
+
+[sharing]
+type = files
+collection_by_map = True
+collection_by_token = True
+permit_create_map = True
+permit_create_token = True
+permit_properties_overlay = True
+
+[storage]
+filesystem_folder = /data

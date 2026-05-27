@@ -1,0 +1,47 @@
+{
+    auto_https off
+    admin off
+}
+
+:5232 {
+    @get-web-root {
+        method GET
+        path /.web
+    }
+    redir @get-web-root /.web/
+
+    # DAV clients with Basic Auth -> Radicale directly (IMAP auth)
+    @has-basic header Authorization "Basic *"
+    reverse_proxy @has-basic localhost:5280
+
+    # Everything else -> validate oauth2-proxy session, set X-Remote-User
+    @needs-auth {
+        not header Authorization "Basic *"
+        not path /oauth2/*
+    }
+    forward_auth @needs-auth localhost:4180 {
+        uri /oauth2/auth
+        copy_headers X-Auth-Request-Email
+
+        @unauth status 401
+        handle_response @unauth {
+            # DAV without session: challenge for Basic Auth
+            @is-dav method PROPFIND PROPPATCH REPORT MKCALENDAR MKCOL PUT DELETE COPY MOVE
+            handle @is-dav {
+                header WWW-Authenticate `Basic realm="Radicale"`
+                respond 401
+            }
+            # Browser: let oauth2-proxy redirect to Keycloak
+            handle {
+                reverse_proxy localhost:4180
+            }
+        }
+    }
+
+    reverse_proxy /oauth2/* localhost:4180
+
+    reverse_proxy localhost:5280 {
+        header_up X-Remote-User {http.request.header.X-Auth-Request-Email}
+        header_up X-Forwarded-User ""
+    }
+}
