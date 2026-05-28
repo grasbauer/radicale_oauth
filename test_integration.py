@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2024 Jan Grasnick
 """Integration tests for the running radicale pod.
 
 Run with: pytest test_integration.py

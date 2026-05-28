@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2024 Jan Grasnick
 """
 Hybrid Radicale auth: IMAP for DAV clients + trusted X-Remote-User header
 for the web UI (set by oauth2-proxy via Caddy forward_auth).

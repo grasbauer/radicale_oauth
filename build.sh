@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2024 Jan Grasnick
 set -euo pipefail
 
 POD_NAME="radicale-pod"
